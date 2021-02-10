@@ -47,6 +47,7 @@ for message in consumer:
             changeProjectStatusMessage = ChangeProjectStatusMessage(**loads( messageBody ))
 
             dbSession = Session()
+
             try:
                 dbSession.query(Project).filter_by(id=changeProjectStatusMessage.id).update({"status": 'DONE'})
                 dbSession.commit()

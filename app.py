@@ -37,35 +37,56 @@ producer = KafkaProducer(
 # The create a configured "Session" class and then create a Session
 db_engine = create_engine('postgresql://pfkp_admin:changeme@localhost:5432/pfkp')
 Session = sessionmaker(bind=db_engine)
-dbSession = Session()
 
 @app.route('/projects', methods = ['GET', 'POST'])
 def processProjectsEndpoint():
    if request.method == 'GET':
-       return getProjects()
+       return findAllProjects()
    elif request.method == 'POST':
-       newProject = Project(
-           name=request.form['name'],
-           description=request.form['description'],
-           status='NEW'
-       )
-
-       dbSession.add(newProject)
-       dbSession.commit()
-
-       message = ChangeProjectStatusMessage(id = newProject.id)
-       messageBody = dumps(message.__dict__)
-
-       logger.info("Message Added to Queue: " + messageBody)
-
-       producer.send(TOPIC_NAME, messageBody.encode('utf-8'))
-
+       newProject = createProject(request)
        return jsonify(newProject.serialize)
 
-def getProjects():
+def findAllProjects():
+    dbSession = Session()
     projects = dbSession.query(Project).all()
     return jsonify(projects=[p.serialize for p in projects])
 
+def createProject(request):
+    newProject = Project(
+        name=request.form['name'],
+        description=request.form['description'],
+        status='NEW'
+    )
+
+    dbSession = Session()
+
+    try:
+        newProject = Project(
+            name=request.form['name'],
+            description=request.form['description'],
+            status='NEW'
+        )
+
+        dbSession.add(newProject)
+        dbSession.commit()
+
+        produceMessageForKafkaTopic(newProject.id)
+
+        return newProject
+    except:
+        dbSession.rollback()
+        raise
+    finally:
+        dbSession.close()
+
+
+def produceMessageForKafkaTopic(projectId):
+    message = ChangeProjectStatusMessage(id=projectId)
+    messageBody = dumps(message.__dict__)
+
+    logger.info("Message Added to Queue: " + messageBody)
+
+    producer.send(TOPIC_NAME, messageBody.encode('utf-8'))
 
 if __name__ == '__main__':
     app.debug = True
