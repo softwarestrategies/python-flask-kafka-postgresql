@@ -47,24 +47,17 @@ From the commandline, run the following script .. which will setup a database an
  
 Now From the commandline, run this script .. which creates a table to use & populate it with a few records
 
-    python-flask-kafka-postgresql $  
-    
-psql -h localhost -p 5432 -d pfkp -U pfkp_admin --password -f ./sql-scripts/create-schema-and-populate.sql
+    python-flask-kafka-postgresql $  psql -h localhost -p 5432 -d pfkp -U pfkp_admin --password -f ./sql-scripts/create-schema-and-populate.sql
  
         NOTE: This command has the database & user created in the previous SQL script running
  
     Password: 
         
         CREATE TABLE
-        INSERT 0 1
-        INSERT 0 1
 
 To check that all is right, log in and make sure all is in place:
 
-    python-flask-kafka-postgresql $  
-
-    
-psql -h localhost -p 5432 -d pfkp -U pfkp_admin --password
+    python-flask-kafka-postgresql $  psql -h localhost -p 5432 -d pfkp -U pfkp_admin --password
 
         projectx=> \dt
     
@@ -72,7 +65,7 @@ psql -h localhost -p 5432 -d pfkp -U pfkp_admin --password
         
         projectx=> select * from project;
     
-            which should show you a listing with 2 projects of roles
+            which should show no projects,  but not fail either
         
         projectx=> \q        
         
