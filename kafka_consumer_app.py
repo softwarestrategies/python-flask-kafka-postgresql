@@ -32,10 +32,10 @@ TOPIC_NAME = 'StartProcess'
 CONSUMER_BOOTSTRAP_SERVERS = os.environ.get('CONSUMER_BOOTSTRAP_SERVERS', 'localhost:9092')
 consumer = KafkaConsumer(
     TOPIC_NAME,
-    bootstrap_servers = [ CONSUMER_BOOTSTRAP_SERVERS ],
-    auto_offset_reset = 'earliest',
-    enable_auto_commit = True,
-    group_id = 'my-group-id'
+    bootstrap_servers=[CONSUMER_BOOTSTRAP_SERVERS],
+    auto_offset_reset='earliest',
+    enable_auto_commit=True,
+    group_id='my-group-id'
 )
 
 for message in consumer:
@@ -44,7 +44,7 @@ for message in consumer:
             messageBody = message.value.decode("utf-8")
             logger.info("Message taken from Queue: " + messageBody)
 
-            changeProjectStatusMessage = ChangeProjectStatusMessage(**loads( messageBody ))
+            changeProjectStatusMessage = ChangeProjectStatusMessage(**loads(messageBody))
 
             dbSession = Session()
 

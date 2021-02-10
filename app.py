@@ -30,7 +30,7 @@ logger.info("Starting app.py ..............")
 PRODUCER_BOOTSTRAP_SERVERS = os.environ.get('PRODUCER_BOOTSTRAP_SERVERS', 'localhost:9092')
 TOPIC_NAME = 'StartProcess'
 producer = KafkaProducer(
-    bootstrap_servers = [ PRODUCER_BOOTSTRAP_SERVERS ]
+    bootstrap_servers=[PRODUCER_BOOTSTRAP_SERVERS]
 )
 
 # Create an Engine, which the Session will use for connection resources
@@ -38,18 +38,21 @@ producer = KafkaProducer(
 db_engine = create_engine('postgresql://pfkp_admin:changeme@localhost:5432/pfkp')
 Session = sessionmaker(bind=db_engine)
 
-@app.route('/projects', methods = ['GET', 'POST'])
+
+@app.route('/projects', methods=['GET', 'POST'])
 def processProjectsEndpoint():
-   if request.method == 'GET':
-       return findAllProjects()
-   elif request.method == 'POST':
-       newProject = createProject(request)
-       return jsonify(newProject.serialize)
+    if request.method == 'GET':
+        return findAllProjects()
+    elif request.method == 'POST':
+        newProject = createProject(request)
+        return jsonify(newProject.serialize)
+
 
 def findAllProjects():
     dbSession = Session()
     projects = dbSession.query(Project).all()
     return jsonify(projects=[p.serialize for p in projects])
+
 
 def createProject(request):
     newProject = Project(
@@ -88,7 +91,7 @@ def produceMessageForKafkaTopic(projectId):
 
     producer.send(TOPIC_NAME, messageBody.encode('utf-8'))
 
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
-

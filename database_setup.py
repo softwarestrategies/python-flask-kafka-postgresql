@@ -11,10 +11,12 @@ Base = declarative_base()
 
 PROJECT_ID_SEQ = Sequence('project_id_seq')
 
+
 class Project(Base):
     __tablename__ = 'project'
 
-    id = Column(Integer, PROJECT_ID_SEQ, primary_key=True, autoincrement=True, server_default=PROJECT_ID_SEQ.next_value())
+    id = Column(Integer, PROJECT_ID_SEQ, primary_key=True, autoincrement=True,
+                server_default=PROJECT_ID_SEQ.next_value())
     name = Column(String(250), nullable=False)
     description = Column(String(250), nullable=False)
     status = Column(String(250))
