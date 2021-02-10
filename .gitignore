@@ -1,0 +1,5 @@
+.idea
+docker-local-data/
+*venv/
+__pycache__/
+*.log
