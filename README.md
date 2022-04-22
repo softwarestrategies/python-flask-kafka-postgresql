@@ -4,7 +4,7 @@
 
 I wanted to learn a few new Python skills and also write an integrated system to show I can do it.
 
-This is a work-in-process and I will improve it as I learn best practices.
+*This is a work-in-process.*  I will complete it and then improve it as I learn best practices.
 
 ## Initial Setup
 
